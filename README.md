@@ -210,3 +210,71 @@ A React.js application that manages the state using Context API and React Hooks 
     </details>
 
 - remove the dummy transactions from the global state that were used for the dvelopment purposes.
+
+## Edit Transaction
+
+- Install the [react-icons](https://www.npmjs.com/package/react-icons) to use the edit button icon in Transaction component.
+
+  ```javascript
+  import { FaEdit } from "react-icons/fa";
+
+  <button className="edit-btn" onClick={() => findItem(transaction)}>
+    <FaEdit />
+  </button>;
+  ```
+
+- The idea is to when a user clicks on the edit button, it captures the name and amount of the transaction and dispkay it in the form field so when a user presses the Add transaction button, it saves the edited transaction.
+
+- we need to keep track of which transaction user wants to filter out, save it in a component state and later pass it to the form. Import the `useState` hook in the `GlobalState.js`, initialize it with a null value in `GlobalProvider`, and pass it as a value to the `GlobalContext.Provider`. `findItem` function sets the state of editItem to the selected transaction object.
+
+  ```javascript
+  const [editItem, seteditItem] = useState(null);
+
+  // Find transaction
+  const findItem = (transaction) => {
+    seteditItem(transaction);
+  };
+  ```
+
+- As we need to pass this `editItem` transaction state to the `AddTransaction` so we can display it the form, we also pass this state as a value to `GlobalContext.Provider`. Use the `editItem` in the `AddTransaction` from the `useContext` hook.
+
+- To replace the form text and amount with the values from `editItem`, we can use the `useEffect` Hook that checks to see if the `editItem` is changed and replace the form values.
+  ```javascript
+  useEffect(() => {
+    if (editItem) {
+      setText(editItem.text);
+      setAmount(editItem.amount);
+    } else {
+      setText("");
+      setAmount(0);
+    }
+  }, [editItem]);
+  ```
+- We can make a seprate dispatch function for the `editTransaction` an pass our edited transaction to the action payload.
+- In the `AddTransaction.js` we check to see if the `editItem` is not null and and pass the new/edited transaction to the `addTransaction` or `editTransaction` respectively.
+  ```javascript
+  const editedTransaction = {
+    id: editItem.id,
+    text: text,
+    amount: parseInt(amount),
+  };
+  editTransaction(editedTransaction);
+  ```
+- Lastly we define our reducer action for editing the transaction that maps through the transactions and replaces the text and amount with the payload values where the id of transaction matches the id of payload.
+  ```javascript
+  case "EDIT_TRANSACTION":
+        return {
+          ...state,
+          transactions: state.transactions.map((transaction) =>
+            transaction.id === action.payload.id
+              ? {
+                  id: transaction.id,
+                  text: action.payload.text,
+                  amount: action.payload.amount,
+                }
+              : transaction
+          ),
+        };
+  ```
+
+---

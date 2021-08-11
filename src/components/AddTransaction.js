@@ -1,23 +1,43 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { GlobalContext } from "../context/GlobalState";
 
 export const AddTransaction = () => {
-  const { addTransaction } = useContext(GlobalContext);
+  const { addTransaction, editItem, editTransaction } =
+    useContext(GlobalContext);
   const [text, setText] = useState("");
   const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    if (editItem) {
+      setText(editItem.text);
+      setAmount(editItem.amount);
+    } else {
+      setText("");
+      setAmount(0);
+    }
+  }, [editItem]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (text.trim() === "" || amount.trim() === "") {
-      alert("Please add a text and amount");
+    if (!editItem) {
+      if (text.trim() === "" || amount.trim() === "") {
+        alert("Please add a text and amount");
+      } else {
+        const newTransaction = {
+          id: Math.floor(Math.random() * 100000000),
+          text: text,
+          amount: parseInt(amount),
+        };
+        addTransaction(newTransaction);
+      }
     } else {
-      const newTransaction = {
-        id: Math.floor(Math.random() * 100000000),
+      const editedTransaction = {
+        id: editItem.id,
         text: text,
         amount: parseInt(amount),
       };
-      addTransaction(newTransaction);
+      editTransaction(editedTransaction);
     }
 
     setText("");
@@ -26,7 +46,7 @@ export const AddTransaction = () => {
 
   return (
     <>
-      <h3>Add new transaction</h3>
+      <h3>{editItem ? "Edit transaction" : "Add new transaction"}</h3>
       <form onSubmit={handleSubmit}>
         <div className="form-control">
           <label htmlFor="text">Text</label>

@@ -1,4 +1,10 @@
-import React, { Children, createContext, useReducer } from "react";
+import React, {
+  Children,
+  createContext,
+  useState,
+  useReducer,
+  useEffect,
+} from "react";
 import AppReducer from "./AppReducer";
 
 // initial State
@@ -18,6 +24,18 @@ export const GlobalContext = createContext(initialState);
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState);
 
+  const [editItem, seteditItem] = useState(null);
+
+  // useEffect(() => {
+  //   console.log(editItem);
+  // }, [editItem]);
+
+  // Find transaction
+  const findItem = (transaction) => {
+    seteditItem(transaction);
+    // console.log(editItem);
+  };
+
   //Actions
   function deleteTransaction(id) {
     dispatch({
@@ -31,6 +49,13 @@ export const GlobalProvider = ({ children }) => {
       payload: transaction,
     });
   }
+  function editTransaction(transaction) {
+    dispatch({
+      type: "EDIT_TRANSACTION",
+      payload: transaction,
+    });
+    seteditItem(null);
+  }
 
   return (
     <GlobalContext.Provider
@@ -38,6 +63,9 @@ export const GlobalProvider = ({ children }) => {
         transactions: state.transactions,
         deleteTransaction,
         addTransaction,
+        findItem,
+        editItem,
+        editTransaction,
       }}
     >
       {children}
