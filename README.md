@@ -129,3 +129,11 @@ A React.js application that manages the state using Context API and React Hooks 
     </details>
 
 ---
+
+## Show the Balance, and Income/Expense
+
+- Import the `GlobalContext` into the components, and use the `useContext` hook to access the transactions.
+- Copy the logic from Vanilla JS for calculation of the total balance, income and expense.
+- Whats nice about the react is that we do not need to update these values mannual any time a transaction is added or delete, React will update the state and rerender itself.
+
+---
