@@ -26,14 +26,72 @@ A React.js application that manages the state using Context API and React Hooks 
 
 ## Creating Components
 
-- Implement Header component
-- Copy the CSS styles from Vanilla javascript expense tracker
-- Copy the Balance code with class names and put the Balance component under container in App.js
-- Follow the same approach for IncomeExpenses component.
+- Implement `Header` component
+- Copy the CSS styles from [Vanilla javascript expense tracker](https://github.com/itkhanz/webProjects-vanillaJS/tree/main/expense-tracker)
+- Copy the `Balance` code with class names and put the Balance component under container in App.js
+- Follow the same approach for `IncomeExpenses` component.
 - Transactions will actually have one parent transactions list component, and a child single transaction component.
-- AddTranaction component will contain the heading and form.
-- Don't need IDs anymore that were previously used to grab DOM elements with Vanilla Javascript. Replace the class attribute with className, and for attribute with htmlFor.
-- Need a component level state to store user input of text and amount, import useState hook.
-- View the components in chrome dev tools under components tab. Click on the `AddTransaction` component to visualize the component state.
+- `AddTranaction` component will contain the heading and form.
+- Don't need IDs anymore that were previously used to grab DOM elements with Vanilla Javascript. Replace the class attribute with `className`, and for attribute with `htmlFor`.
+- Need a component level state to store user input of text and amount, import `useState` hook.
+- View the components in chrome dev tools under components tab. Click on the `AddTransaction` component and under Hooks you can visualize the component state.
+
+---
+
+## Global Context state
+
+- we could put the state in App component and prop drill to the child compionents.
+- For larger applications, `Context API` and `Redux` is usually used.
+- Create a `context` folder - > `GlobalState.js` and put the state. For larger applications, we might have different contexts.
+- We just need transactions list as initial state, other stuff can be calculated from it.
+- create a `GlobalContext` and `GlobalProvider` and manage the state via `useReducer(reducer, initialState)`.
+- pass the `props.children` to GlobalProvider so the child components can access the state without having to manually pass the state.
+    <details>
+    <summary>Click to expand</summary>
+
+  ```javascript
+  import React, { Children, createContext, useReducer } from "react";
+
+  // initial State
+  const initialState = {
+    transactions: [
+      { id: 1, text: "Flower", amount: -20 },
+      { id: 2, text: "Salary", amount: 300 },
+      { id: 3, text: "Book", amount: -10 },
+      { id: 4, text: "Camera", amount: 150 },
+    ],
+  };
+
+  // create context
+  export const GlobalContext = createContext(initialState);
+
+  // Provider Component
+  export const GlobalProvider = ({ childres }) => {
+    const [state, dispatch] = useReducer(AppReducer, initialState);
+
+    return (
+      <GlobalContext.Provider value={{ transactions: state.transactions }}>
+        {children}
+      </GlobalContext.Provider>
+    );
+  };
+  ```
+
+    </details>
+
+- Instead of putting the reducer in same file, create a seprata `Appreducer` file and import it into the `GlobalContext. Reducer specifies how the state changes in response to certain actions.
+
+  ```javascript
+  export default (state, action) => {
+    switch (action.type) {
+      default:
+        return state;
+    }
+  };
+  ```
+
+- We are passing the `AppReducer` to the `useReducer(AppReducer, initialState)` and then we can access the `state` values from the `initialState`and passing it to the value of `GlobalProvider`
+
+- Wrap all the components in App.js under the `GlobalProvider`.
 
 ---
