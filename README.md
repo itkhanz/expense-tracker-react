@@ -93,5 +93,39 @@ A React.js application that manages the state using Context API and React Hooks 
 - We are passing the `AppReducer` to the `useReducer(AppReducer, initialState)` and then we can access the `state` values from the `initialState`and passing it to the value of `GlobalProvider`
 
 - Wrap all the components in App.js under the `GlobalProvider`.
+- Open the chrome dev tools, and go to GlobalProvider -> hooks -> Reducer -> there we have the transactions that are accessable to all the child components.
+
+---
+
+## Using the Global State to display transactions
+
+- You can access the state using the `useContext` hook and pass our `GlobalContext` to it. context will return us our transactions global state object and we cam use it accordingly. Destructure it to get the tranactions array.
+- Loop through the transactions array, and display the transactions:
+- Create a seprate component for the `Transaction` and pass it to to the map function with transaction prop. Each list item in the output of map should have a unique key.
+
+    <details>
+    <summary>Click to expand</summary>
+
+  ```javascript
+  import React from "react";
+
+  export const Transaction = ({ transaction }) => {
+    const sign = transaction.amount < 0 ? "-" : "+";
+
+    return (
+      <>
+        <li className={transaction.amount < 0 ? "minus" : "plus"}>
+          {transaction.text}{" "}
+          <span>
+            {sign}${Math.abs(transaction.amount)}
+          </span>
+          <button className="delete-btn">x</button>
+        </li>
+      </>
+    );
+  };
+  ```
+
+    </details>
 
 ---
