@@ -90,7 +90,7 @@ A React.js application that manages the state using Context API and React Hooks 
   };
   ```
 
-- We are passing the `AppReducer` to the `useReducer(AppReducer, initialState)` and then we can access the `state` values from the `initialState`and passing it to the value of `GlobalProvider`
+- We are passing the `AppReducer` to the `useReducer(AppReducer, initialState)` and then we can access the `state` values from the `initialState` and passing it to the value of `GlobalProvider`
 
 - Wrap all the components in App.js under the `GlobalProvider`.
 - Open the chrome dev tools, and go to GlobalProvider -> hooks -> Reducer -> there we have the transactions that are accessable to all the child components.
@@ -169,3 +169,44 @@ A React.js application that manages the state using Context API and React Hooks 
 - we can use this `deleteTransaction` inside the `Transaction` component by the `useContext` hook with the `onClick` event handler on delete button.
 
 ---
+
+## ADD Transaction
+
+- Make a dispatcher function for add transaction in a similiar way except this time the payload will be whole transaction instead of id.
+- In the reducer action, we basically want to return the transactions that are already there in addition to a new tranaction in payload.
+  ```javascript
+  case "ADD_TRANSACTION":
+        return {
+          ...state,
+          transactions: [...state.transactions, action.payload],
+        };
+  ```
+- import the addTransaction action using the useContext hook inside the AddTransaction component.
+- write a function to handle the form submission, and call the addTransaction dispatcher action in it.
+
+    <details>
+    <summary>Click to expand</summary>
+
+  ```javascript
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (text.trim() === "" || amount.trim() === "") {
+      alert("Please add a text and amount");
+    } else {
+      const newTransaction = {
+        id: Math.floor(Math.random() * 100000000),
+        text: text,
+        amount: parseInt(amount),
+      };
+      addTransaction(newTransaction);
+    }
+
+    setText("");
+    setAmount(0);
+  };
+  ```
+
+    </details>
+
+- remove the dummy transactions from the global state that were used for the dvelopment purposes.
