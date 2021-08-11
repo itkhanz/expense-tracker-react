@@ -137,3 +137,35 @@ A React.js application that manages the state using Context API and React Hooks 
 - Whats nice about the react is that we do not need to update these values mannual any time a transaction is added or delete, React will update the state and rerender itself.
 
 ---
+
+## Delete Transaction
+
+- We need to have `action` in our global state. Inside the `GlobalProvider` component, define the actions that will be dispatched to reducer.
+
+  ```javascript
+  //Actions
+  function deleteTransaction(id) {
+    dispatch({
+      type: "DELETE_TRANSACTION",
+      payload: id,
+    });
+  }
+  ```
+
+- create a case for delete transactions in reducer. Reducer just changes the state and pass it down to components. We have to create a new state and send it down. We are dispatching our action with a type and payload ID so we can just filter out the transactions based on payload ID.
+
+  ```javascript
+  case "DELETE_TRANSACTION":
+  return {
+    ...state,
+    transactions: state.transactions.filter(
+      (transaction) => transaction.id !== action.payload
+    ),
+  };
+  ```
+
+- Back in the `GlobalState` in order for us to use the `deleteTransaction`, we have to pass it down to `Provider` as a value.
+
+- we can use this `deleteTransaction` inside the `Transaction` component by the `useContext` hook with the `onClick` event handler on delete button.
+
+---
